@@ -114,21 +114,23 @@ contract NFTMarketplace is ERC721URIStorage {
     function fetchMarketItems() public view returns (MarketItem[] memory) {
         uint256 itemCount = _tokenIds.current();
         uint256 unsoldItemCount = _tokenIds.current() - _itemsSold.current();
-        MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+        uint256 currentIndex = 0;
 
+        MarketItem[] memory items = new MarketItem[](unsoldItemCount);
         for (uint256 i = 0; i < itemCount; i++) {
-            if (idToMarketItem[i + 1].sold == false) {
-                uint256 tokenId = idToMarketItem[i + 1].tokenId;
-                items[i] = idToMarketItem[tokenId];
+            if (idToMarketItem[i + 1].owner == address(this)) {
+                MarketItem storage currentItem = idToMarketItem[i + 1];
+                items[currentIndex] = currentItem;
+                currentIndex++;
             }
         }
-
         return items;
     }
 
     function fetchMyNFTs() public view returns (MarketItem[] memory) {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
+        uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
             if (idToMarketItem[i + 1].owner == msg.sender) {
@@ -140,8 +142,9 @@ contract NFTMarketplace is ERC721URIStorage {
 
         for (uint256 i = 0; i < itemCount; i++) {
             if (idToMarketItem[i + 1].owner == msg.sender) {
-                uint256 tokenId = idToMarketItem[i + 1].tokenId;
-                items[i] = idToMarketItem[tokenId];
+                MarketItem storage currentItem = idToMarketItem[i + 1];
+                items[currentIndex] = currentItem;
+                currentIndex++;
             }
         }
 
@@ -151,6 +154,7 @@ contract NFTMarketplace is ERC721URIStorage {
     function fetchItemsListed() public view returns (MarketItem[] memory) {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
+        uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
             if (idToMarketItem[i + 1].seller == msg.sender) {
@@ -162,8 +166,9 @@ contract NFTMarketplace is ERC721URIStorage {
 
         for (uint256 i = 0; i < totalItemCount; i++) {
             if (idToMarketItem[i + 1].seller == msg.sender) {
-                uint256 tokenId = idToMarketItem[i + 1].tokenId;
-                items[i] = idToMarketItem[tokenId];
+                MarketItem storage currentItem = idToMarketItem[i + 1];
+                items[currentIndex] = currentItem;
+                currentIndex++;
             }
         }
 
