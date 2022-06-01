@@ -55,7 +55,7 @@ const Home = () => {
     setLoading(false);
   };
 
-  const buyNfts = async (nft: any) => {
+  const buyNft = async (nft: any) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -118,7 +118,9 @@ const Home = () => {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small">Buy</Button>
+                      <Button size="small" onClick={() => buyNft(nft)}>
+                        Buy
+                      </Button>
                     </CardActions>
                   </Card>
                 </Grid>
