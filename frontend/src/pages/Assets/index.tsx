@@ -9,6 +9,7 @@ import Web3Modal from "web3modal";
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -91,7 +92,8 @@ const Assets = () => {
                     <CardMedia
                       component="img"
                       height="140"
-                      image={nft.image}
+                      // image={nft.image}
+                      image="https://www.coreldraw.com/static/cdgs/images/free-trials/img-ui-cdgsx.jpg"
                       alt={nft.name}
                     />
                     <CardContent>
@@ -102,11 +104,20 @@ const Assets = () => {
                         {nft.description}
                       </Typography>
                     </CardContent>
-                    {/* <CardActions>
-                      <Button size="small" onClick={() => buyNft(nft)}>
-                        Buy
-                      </Button>
-                    </CardActions> */}
+                    <CardActions
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 1 }}
+                      >
+                        {`${nft.price} ETH`}
+                      </Typography>
+                    </CardActions>
                   </Card>
                 </Grid>
               ))}

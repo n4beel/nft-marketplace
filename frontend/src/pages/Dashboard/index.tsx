@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 import CardMedia from "@mui/material/CardMedia";
 import { NFT } from "../../interfaces";
 import { NFTMarketplace__factory } from "../../typechain";
@@ -105,6 +106,7 @@ const Dashboard = () => {
 
     await transaction.wait();
     handleClose();
+    fetchNfts();
   };
 
   const fetchNfts = async () => {
@@ -193,8 +195,9 @@ const Dashboard = () => {
                     <Card>
                       <CardMedia
                         component="img"
+                        image="https://www.coreldraw.com/static/cdgs/images/free-trials/img-ui-cdgsx.jpg"
                         height="140"
-                        image={nft.image}
+                        // image={nft.image}
                         alt={nft.name}
                       />
                       <CardContent>
@@ -205,11 +208,20 @@ const Dashboard = () => {
                           {nft.description}
                         </Typography>
                       </CardContent>
-                      {/* <CardActions>
-                      <Button size="small" onClick={() => buyNft(nft)}>
-                        Buy
-                      </Button>
-                    </CardActions> */}
+                      <CardActions
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ ml: 1 }}
+                        >
+                          {`${nft.price} ETH`}
+                        </Typography>
+                      </CardActions>
                     </Card>
                   </Grid>
                 ))}

@@ -25,7 +25,10 @@ const Home = () => {
   }, []);
 
   const fetchNfts = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
     const marketContract = NFTMarketplace__factory.connect(
       marketAddress,
       provider
@@ -110,7 +113,8 @@ const Home = () => {
                     <CardMedia
                       component="img"
                       height="140"
-                      image={nft.image}
+                      // image={nft.image}
+                      image="https://www.coreldraw.com/static/cdgs/images/free-trials/img-ui-cdgsx.jpg"
                       alt={nft.name}
                     />
                     <CardContent>
@@ -121,7 +125,19 @@ const Home = () => {
                         {nft.description}
                       </Typography>
                     </CardContent>
-                    <CardActions>
+                    <CardActions
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 1 }}
+                      >
+                        {`${nft.price} ETH`}
+                      </Typography>
                       <Button size="small" onClick={() => buyNft(nft)}>
                         Buy
                       </Button>
