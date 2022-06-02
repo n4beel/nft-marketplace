@@ -1,20 +1,18 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import Market from "./../../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json";
 import { marketAddress } from "../../configure";
+import { NFT } from "../../interfaces";
+import { NFTMarketplace__factory } from "../../typechain";
 import axios from "axios";
 import Web3Modal from "web3modal";
 
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { NFT } from "../../interfaces";
 
 const Assets = () => {
   const [nfts, setNfts] = useState<NFT[]>([]);
@@ -25,19 +23,22 @@ const Assets = () => {
   }, []);
 
   const fetchNfts = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
-    const marketContract = new ethers.Contract(
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const marketContract = NFTMarketplace__factory.connect(
       marketAddress,
-      Market.abi,
-      provider
+      provider.getSigner()
     );
+
     const data = await marketContract.fetchMyNFTs();
 
     console.log(data);
 
     const items = await Promise.all(
       data.map(async (item: NFT) => {
-        const tokenUri = await marketContract.tokenUri(item.tokenId);
+        const tokenUri = await marketContract.tokenURI(item.tokenId);
         const meta = await axios.get(tokenUri);
 
         return {

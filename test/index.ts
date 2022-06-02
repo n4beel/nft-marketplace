@@ -47,10 +47,10 @@ describe("NFTMarketplace", function () {
 
     // console.log("market items => ", marketItems)
 
-    // const myNFTs = await market.connect(buyerAddress).fetchMyNFTs();
-    // console.log("my NFTs => ", myNFTs)
+    const myNFTs = await market.connect(buyerAddress).fetchMyNFTs();
+    console.log("my NFTs => ", myNFTs);
 
-    const listedNFTs = await market.connect(buyerAddress).fetchItemsListed();
-    console.log("listed NFTs => ", listedNFTs);
+    // const listedNFTs = await market.connect(buyerAddress).fetchItemsListed();
+    // console.log("listed NFTs => ", listedNFTs);
   });
 });

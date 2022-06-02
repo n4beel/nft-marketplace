@@ -19,6 +19,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { NFT } from "../../interfaces";
+import { NFTMarketplace__factory } from "../../typechain";
 
 const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" });
 
@@ -90,15 +91,16 @@ const Dashboard = () => {
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
 
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(marketAddress, Market.abi, signer);
+    const contract = NFTMarketplace__factory.connect(
+      marketAddress,
+      provider.getSigner()
+    );
     const price = ethers.utils.parseUnits(formInput.price, "ether");
 
     let listingPrice = await contract.getListingPrice();
-    listingPrice = listingPrice.toString();
 
     const transaction = await contract.createToken(url, price, {
-      value: listingPrice,
+      value: listingPrice.toString(),
     });
 
     await transaction.wait();
@@ -106,14 +108,14 @@ const Dashboard = () => {
   };
 
   const fetchNfts = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
-    const marketContract = new ethers.Contract(
-      marketAddress,
-      Market.abi,
-      provider
-    );
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
 
-    console.log("contract -->", marketContract);
+    const marketContract = NFTMarketplace__factory.connect(
+      marketAddress,
+      provider.getSigner()
+    );
 
     const data = await marketContract.fetchItemsListed();
 

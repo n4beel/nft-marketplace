@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import Market from "./../../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json";
 import { marketAddress } from "../../configure";
+import { NFTMarketplace__factory } from "../../typechain";
+import { NFT } from "../../interfaces";
 import axios from "axios";
 import Web3Modal from "web3modal";
 
@@ -14,8 +15,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { NFTMarketplace__factory } from "../../typechain";
-import { NFT } from "../../interfaces";
 
 const Home = () => {
   const [nfts, setNfts] = useState<NFT[]>([]);
@@ -67,8 +66,6 @@ const Home = () => {
       provider.getSigner()
     );
 
-    // const signer = provider.getSigner();
-    // const contract = new ethers.Contract(marketAddress, Market.abi, signer);
     const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
 
     const transaction = await contract.createMarketSale(nft.tokenId, {
