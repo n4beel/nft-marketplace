@@ -14,10 +14,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { NFTMarketplace__factory } from "../../typechain";
+import { NFT } from "../../interfaces";
 
 const Home = () => {
-  const [nfts, setNfts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchNfts();
@@ -25,18 +27,18 @@ const Home = () => {
 
   const fetchNfts = async () => {
     const provider = new ethers.providers.JsonRpcProvider();
-    const marketContract = new ethers.Contract(
+    const marketContract = NFTMarketplace__factory.connect(
       marketAddress,
-      Market.abi,
       provider
     );
+
     const data = await marketContract.fetchMarketItems();
 
     console.log(data);
 
     const items = await Promise.all(
-      data.map(async (item: any) => {
-        const tokenUri = await marketContract.tokenUri(item.tokenId);
+      data.map(async (item: NFT) => {
+        const tokenUri = await marketContract.tokenURI(item.tokenId);
         const meta = await axios.get(tokenUri);
 
         return {
@@ -55,13 +57,18 @@ const Home = () => {
     setLoading(false);
   };
 
-  const buyNft = async (nft: any) => {
+  const buyNft = async (nft: NFT) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
 
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(marketAddress, Market.abi, signer);
+    const contract = NFTMarketplace__factory.connect(
+      marketAddress,
+      provider.getSigner()
+    );
+
+    // const signer = provider.getSigner();
+    // const contract = new ethers.Contract(marketAddress, Market.abi, signer);
     const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
 
     const transaction = await contract.createMarketSale(nft.tokenId, {
@@ -100,8 +107,8 @@ const Home = () => {
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
             {nfts &&
-              nfts.map((nft) => (
-                <Grid item xs={12} sm={4} md={3}>
+              nfts.map((nft, id) => (
+                <Grid item xs={12} sm={4} md={3} key={id}>
                   <Card>
                     <CardMedia
                       component="img"

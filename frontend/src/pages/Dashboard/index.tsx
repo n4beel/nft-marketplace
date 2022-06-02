@@ -18,6 +18,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { NFT } from "../../interfaces";
 
 const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" });
 
@@ -35,7 +36,7 @@ const style = {
 
 const Dashboard = () => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [nfts, setNfts] = useState<any[]>([]);
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const [formInput, setFormInput] = useState({
     price: "",
@@ -50,7 +51,7 @@ const Dashboard = () => {
     fetchNfts();
   }, []);
 
-  const onDrop = useCallback(async (acceptedFiles: any) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
 
     try {
@@ -84,7 +85,7 @@ const Dashboard = () => {
     }
   };
 
-  const createSale = async (url: any) => {
+  const createSale = async (url: string) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -111,13 +112,16 @@ const Dashboard = () => {
       Market.abi,
       provider
     );
+
+    console.log("contract -->", marketContract);
+
     const data = await marketContract.fetchItemsListed();
 
     console.log(data);
 
     const items = await Promise.all(
-      data.map(async (item: any) => {
-        const tokenUri = await marketContract.tokenUri(item.tokenId);
+      data.map(async (item: NFT) => {
+        const tokenUri = await marketContract.tokenURI(item.tokenId);
         const meta = await axios.get(tokenUri);
 
         return {
@@ -182,8 +186,8 @@ const Dashboard = () => {
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
               {nfts &&
-                nfts.map((nft) => (
-                  <Grid item xs={12} sm={4} md={3}>
+                nfts.map((nft, id) => (
+                  <Grid item xs={12} sm={4} md={3} key={id}>
                     <Card>
                       <CardMedia
                         component="img"

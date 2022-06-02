@@ -14,9 +14,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { NFT } from "../../interfaces";
 
 const Assets = () => {
-  const [nfts, setNfts] = useState<any[]>([]);
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const Assets = () => {
     console.log(data);
 
     const items = await Promise.all(
-      data.map(async (item: any) => {
+      data.map(async (item: NFT) => {
         const tokenUri = await marketContract.tokenUri(item.tokenId);
         const meta = await axios.get(tokenUri);
 
@@ -83,8 +84,8 @@ const Assets = () => {
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
             {nfts &&
-              nfts.map((nft) => (
-                <Grid item xs={12} sm={4} md={3}>
+              nfts.map((nft, id) => (
+                <Grid item xs={12} sm={4} md={3} key={id}>
                   <Card>
                     <CardMedia
                       component="img"

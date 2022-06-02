@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+import "hardhat/console.sol";
+
 struct MarketItem {
     uint256 tokenId;
     address payable seller;
@@ -155,6 +157,8 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
+
+        console.log("Sender of message %s", msg.sender);
 
         for (uint256 i = 0; i < totalItemCount; i++) {
             if (idToMarketItem[i + 1].seller == msg.sender) {
